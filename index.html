@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI & ML Exams – 20 Questions per Exam</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f5f6fa;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      direction: rtl;
+    }
+
+    .container {
+      width: 95%;
+      max-width: 1100px;
+      background: #ffffff;
+      margin: 30px 0;
+      padding: 25px 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 24px;
+      text-align: center;
+      color: #222;
+    }
+
+    .exam-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .badge {
+      background: #e8f0ff;
+      color: #1a4fd6;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .progress-bar-wrapper {
+      width: 100%;
+      height: 8px;
+      background: #eee;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #1a73e8, #34a853);
+      transition: width 0.3s ease;
+    }
+
+    .question-box {
+      margin-bottom: 20px;
+    }
+
+    .question-text {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .options-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .options-list li {
+      margin-bottom: 8px;
+    }
+
+    .option-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      font-size: 14px;
+    }
+
+    .option-label:hover {
+      background: #f3f7ff;
+      border-color: #1a73e8;
+    }
+
+    .option-label input {
+      transform: scale(1.1);
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+      gap: 10px;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn-prev {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .btn-next {
+      background: #1a73e8;
+      color: white;
+    }
+
+    .btn-next:disabled,
+    .btn-prev:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    #results {
+      margin-top: 25px;
+      border-top: 1px solid #eee;
+      padding-top: 20px;
+    }
+
+    #results h2 {
+      margin-top: 0;
+      font-size: 20px;
+      text-align: center;
+    }
+
+    .score-box {
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 15px;
+    }
+
+    .score-box span {
+      font-weight: 700;
+    }
+
+    .exam-result-block {
+      margin-bottom: 35px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-bottom: 10px;
+      table-layout: fixed;
+    }
+
+    table thead {
+      background: #f3f4f6;
+    }
+
+    table th, table td {
+      border: 1px solid #e5e7eb;
+      padding: 8px;
+      vertical-align: top;
+      text-align: right;
+    }
+
+    table th {
+      font-weight: 700;
+    }
+
+    .correct-answer {
+      color: #15803d;
+      font-weight: 600;
+    }
+
+    .wrong-answer {
+      color: #b91c1c;
+      font-weight: 600;
+    }
+
+    .option-line {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 3px;
+    }
+
+    .option-icon {
+      min-width: 18px;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .neutral-option {
+      color: #374151;
+    }
+
+    .note {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #6b7280;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+        <h1>فارس ركز منيح </h1>
+
+    <h1>Lecture 07 - Intro to AI Exams – كل 20 سؤال هو امتحان ستقل</h1>
+
+    <div id="quiz-area">
+      <div class="exam-header">
+        <div>
+          الامتحان <span id="exam-number">1</span> من <span id="total-exams">1</span>
+        </div>
+        <div class="badge">
+          السؤال <span id="question-index">1</span> من <span id="exam-questions-count">0</span>
+        </div>
+      </div>
+
+      <div class="progress-bar-wrapper">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+
+      <div class="question-box">
+        <div class="question-text" id="question-text"></div>
+        <ul class="options-list" id="options-list"></ul>
+      </div>
+
+      <div class="controls">
+        <button class="btn-prev" id="prev-btn">السابق</button>
+        <button class="btn-next" id="next-btn">التالي</button>
+      </div>
+      <div class="note">
+        ملاحظة: بعض الأسئلة قد تحتوي أكثر من إجابة صحيحة (اختر كل ما ينطبق).
+      </div>
+    </div>
+
+    <div id="results"></div>
+  </div>
+
+  <script>
+    // ==============================
+    // جميع الأسئلة كما هي (لا تغيّر)
+    // ==============================
+
+    const questions = [
+      {
+        text: "Based on the statement in the slide: \"Artificial intelligence involves building and understanding intelligent entities, or agents.\" What does this statement explain about artificial intelligence?",
+        options: [
+          "It involves building and understanding intelligent entities or agents",
+          "It involves building and understanding data only",
+          "It involves building and understanding traditional systems",
+          "It involves building and understanding digital images"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which of the following are considered hot AI technologies?",
+        options: [
+          "Machine Learning Platforms",
+          "AI-optimized Hardware",
+          "File Backup Systems",
+          "Email Sorting Tools"
+        ],
+        correct: [0, 1]
+      },
+      {
+        text: "What does Interacting with the real world include according to the slide?",
+        options: [
+          "Perceive, understand, act",
+          "Planning and making decisions",
+          "Continuous learning and adaptation",
+          "Modelling the external world"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Based on the slide, which of the following belongs to Reasoning and planning?",
+        options: [
+          "Image understanding",
+          "Speech recognition",
+          "Modelling the external world",
+          "Ability to take action"
+        ],
+        correct: [2]
+      },
+      {
+        text: "According to the slide, what is included in Learning and adaptation?",
+        options: [
+          "Planning and making decisions",
+          "Speech recognition",
+          "Dealing with unexpected problems",
+          "Continuous learning and adaptation"
+        ],
+        correct: [3]
+      },
+      {
+        text: "What does Machine Learning focus on?",
+        options: [
+          "Developing computer programs that can access data and learn from it",
+          "Processing and analyzing natural language",
+          "Understanding digital images and videos",
+          "Automating human visual tasks"
+        ],
+        correct: [0]
+      },
+      {
+        text: "What is the main concern of Natural Language Processing (NLP)?",
+        options: [
+          "Enabling computers to process and analyze large amounts of natural language data",
+          "Allowing machines to learn from experience",
+          "Automating visual tasks",
+          "Understanding digital images"
+        ],
+        correct: [0]
+      },
+      {
+        text: "What does Computer Vision aim to achieve from an engineering perspective?",
+        options: [
+          "Automate tasks that the human visual system can do",
+          "Learn from experience",
+          "Process human language",
+          "Recognize speech"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which of the following is one of the fundamental disciplines that Artificial Intelligence utilizes?",
+        options: [
+          "History",
+          "Mathematics",
+          "Music",
+          "Literature"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Which application is associated with the AI field Computer Vision?",
+        options: [
+          "Personalized shopping",
+          "Facial recognition",
+          "Credit scoring",
+          "Utility demand management and response"
+        ],
+        correct: [1]
+      },
+      {
+        text: "What is an example of an application of Natural Language Processing?",
+        options: [
+          "Robot-assisted surgery",
+          "Chat bots",
+          "Search engines",
+          "Credit scoring"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Which of the following applications belongs to Information Retrieval?",
+        options: [
+          "Search engines",
+          "Facial recognition",
+          "Personalized shopping",
+          "Robot-assisted surgery"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which application represents the AI field Robotics?",
+        options: [
+          "Credit scoring",
+          "Chat bots",
+          "Robot-assisted surgery",
+          "Personalized shopping"
+        ],
+        correct: [2]
+      },
+      {
+        text: "Which of the following represents a key benefit of AI related to automating organizational processes?",
+        options: [
+          "Enhanced customer experience",
+          "Business automation",
+          "Gaining competitive advantage",
+          "Business insights"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Which benefit of AI is associated with reducing expenses and saving operational time?",
+        options: [
+          "Error reduction and productivity boost",
+          "Enhanced customer experience",
+          "Gaining competitive advantage",
+          "Time & costs saving"
+        ],
+        correct: [3]
+      },
+      {
+        text: "Which of the following AI benefits helps companies gain a competitive advantage?",
+        options: [
+          "Business automation",
+          "Error reduction & boost productivity",
+          "Gaining competitive advantage",
+          "Time & costs saving"
+        ],
+        correct: [2]
+      },
+      {
+        text: "Which of the following are among the top AI technologies?",
+        options: [
+          "Speech Recognition",
+          "Virtual Agents",
+          "PDF Compression",
+          "Barcode Systems"
+        ],
+        correct: [0, 1]
+      },
+      {
+        text: "Which of the following options provides correct examples of companies working in Artificial Intelligence?",
+        options: [
+          "Tesla, Snapchat, Adobe, Zoom",
+          "Nokia, Siemens, HTC, Huawei",
+          "OpenAI, Google DeepMind, Meta (LLaMA), Anthropic",
+          "Pinterest, PayPal, Dropbox, Spotify"
+        ],
+        correct: [2]
+      },
+      {
+        text: "Which of the following is mentioned in the slide as part of Google’s AI technology?",
+        options: [
+          "TensorFlow",
+          "PyTorch",
+          "Keras",
+          "Jupyter Engine"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which API is listed as one of Google’s Machine Learning APIs?",
+        options: [
+          "Amazon Lex API",
+          "IBM Watson Speech API",
+          "Meta Vision Engine",
+          "Google Cloud Vision API"
+        ],
+        correct: [3]
+      },
+      {
+        text: "Which of the following is an AI product mentioned under “AI in Google’s Products”?",
+        options: [
+          "Alexa",
+          "Google Assistant",
+          "Siri",
+          "Bixby"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Which of the following are considered among the hottest AI technologies?",
+        options: [
+          "Generative AI",
+          "Natural Language Generation",
+          "Web Browsing Automation",
+          "Data Cleaning Tools"
+        ],
+        correct: [0, 1]
+      },
+      {
+        text: "Which of the following belong to the hottest AI technologies?",
+        options: [
+          "Decision Management",
+          "Deep Learning Platforms",
+          "Network Monitoring",
+          "Image Compression"
+        ],
+        correct: [0, 1]
+      },
+      {
+        text: "Which of the following are included in the top AI technologies?",
+        options: [
+          "Biometrics",
+          "Robotic Process Automation",
+          "Digital Signatures",
+          "Cloud Storage"
+        ],
+        correct: [0, 1]
+      },
+      {
+        text: "Which statement reflects John McCarthy’s definition of Artificial Intelligence?",
+        options: [
+          "Artificial Intelligence is the science and engineering of making intelligent machines",
+          "AI focuses only on robot movement",
+          "AI is the science of computer graphics",
+          "AI is used only for entertainment"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which of the following describes a computer performing tasks that normally require human intelligence?",
+        options: [
+          "A computer drawing random shapes",
+          "A computer performing tasks that normally require human intelligence",
+          "A computer only storing files",
+          "A computer used only for gaming"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Which statement refers to getting a computer to do in real life what computers do in movies?",
+        options: [
+          "A computer doing in real life what computers do in movies",
+          "A computer converting images into text",
+          "A computer used only for emails",
+          "A computer running simple math operations"
+        ],
+        correct: [0]
+      },
+      {
+        text: "What does the abbreviation AI represent in the slide?",
+        options: [
+          "Artificial Input",
+          "Advanced Interface",
+          "Machine Intelligence",
+          "Audio Integration"
+        ],
+        correct: [2]
+      },
+      {
+        text: "What is the main purpose of the Turing Test?",
+        options: [
+          "To measure computer speed",
+          "To determine whether responses come from a computer or a human",
+          "To evaluate hardware quality",
+          "To test internet connectivity"
+        ],
+        correct: [1]
+      },
+      {
+        text: "In the Venn diagram, the overlapping area labeled “Turing Test” represents:",
+        options: [
+          "The point where human and intelligent behaviors intersect",
+          "Human behavior that is not intelligent",
+          "Intelligent behavior not displayed by humans",
+          "Random machine errors"
+        ],
+        correct: [0]
+      },
+      {
+        text: "which of the following statements best describes the relationship between machine learning and human learning?",
+        options: [
+          "Computer performance increases faster than human performance over time",
+          "Human performance grows faster than computer performance",
+          "Both human and computer performance decrease over time",
+          "Human performance eventually surpasses computer performance"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which goal of AI refers to a “system that think like humans”?",
+        options: [
+          "Thinking like humans",
+          "Acting rationally",
+          "Acting like humans",
+          "Thinking rationally"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which goal of AI describes a “system that think rationally”?",
+        options: [
+          "Acting like humans",
+          "Thinking like humans",
+          "Thinking rationally",
+          "Acting rationally"
+        ],
+        correct: [2]
+      },
+      {
+        text: "Which category refers to a “system that act like humans”?",
+        options: [
+          "Thinking rationally",
+          "Acting rationally",
+          "Acting like humans",
+          "Thinking like humans"
+        ],
+        correct: [2]
+      },
+      {
+        text: "Which goal of AI corresponds to a “system that act rationally”?",
+        options: [
+          "Thinking like humans",
+          "Acting rationally",
+          "Acting like humans",
+          "Thinking rationally"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Which of the following belongs to the category “system that think like humans”?",
+        options: [
+          "Logic",
+          "Cognitive science",
+          "Doing the right thing",
+          "Maximize goal achievement"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Which item is associated with a “system that think rationally”?",
+        options: [
+          "Laws of thought",
+          "Game AI, control NPCs",
+          "Control the body",
+          "The Turing Test"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which example belongs to the category “system that act like humans”?",
+        options: [
+          "Logic",
+          "Maximize the goal achievement",
+          "It involves solving",
+          "Understand language"
+        ],
+        correct: [3]
+      },
+      {
+        text: "Which of the following describes a “system that act rationally”?",
+        options: [
+          "Cognitive science",
+          "Neuron level",
+          "Doing the right thing",
+          "Game AI, control NPCs"
+        ],
+        correct: [2]
+      },
+      {
+        text: "Which of the following belongs to the requirements under Machine Learning?",
+        options: [
+          "Deep learning",
+          "Speech to text",
+          "Robotics",
+          "Vision"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which item is listed under Natural Language Processing (NLP)?",
+        options: [
+          "Image recognition",
+          "Planning and scheduling",
+          "Translation",
+          "Robotics"
+        ],
+        correct: [2]
+      },
+      {
+        text: "Which of the following belongs to the Speech category?",
+        options: [
+          "Predictive analytics",
+          "Speech to text",
+          "Expert systems",
+          "Machine vision"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Which element is related to Expert Systems?",
+        options: [
+          "Classification & clustering",
+          "Text to speech",
+          "Planning, scheduling & optimization",
+          "Image recognition"
+        ],
+        correct: [3]
+      },
+      {
+        text: "Which of the following is associated with Robotics?",
+        options: [
+          "Translation",
+          "Predictive analytics",
+          "Robotics",
+          "Text to speech"
+        ],
+        correct: [2]
+      },
+      {
+        text: "Which requirement belongs to the Vision category?",
+        options: [
+          "Information extraction",
+          "Speech to text",
+          "Machine vision",
+          "Planning & optimization"
+        ],
+        correct: [2]
+      },
+      {
+        text: "Which statement best defines Artificial Intelligence (AI)?",
+        options: [
+          "A field that focuses only on robot mechanics",
+          "A field of computer science dedicated to making intelligent decisions, reasoning, and problem solving",
+          "A field that studies only computer hardware",
+          "A system used only for storing information"
+        ],
+        correct: [1]
+      },
+      {
+        text: "What does Machine Learning (ML) focus on?",
+        options: [
+          "Teaching computers to draw images",
+          "Getting machines to act without being programmed to do so",
+          "Designing computer chips",
+          "Translating code into hardware"
+        ],
+        correct: [3]
+      },
+      {
+        text: "What does Machine Learning (ML) focus on?",
+        options: [
+          "Designing computer chips",
+          "Translating code into hardware",
+          "Teaching computers to draw images",
+          "Getting machines to act without being programmed to do so"
+        ],
+        correct: [3]
+      },
+      {
+        text: "Which of the following describes Natural Language Processing (NLP)?",
+        options: [
+          "The ability of computers to understand or process natural human languages and derive meaning from them",
+          "A method used to create physical robots",
+          "A system for managing computer memory",
+          "A technique for improving network speed"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which option describes a Neural Network?",
+        options: [
+          "A process used only for data sorting",
+          "A computational approach that models how the brain solves problems using layers of inputs and outputs",
+          "A method used only in robotics",
+          "A system that requires no training"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Which statement correctly describes Data Mining?",
+        options: [
+          "The process of discovering patterns within large sets of data to extract useful information",
+          "A technique used only to store data",
+          "A system that allows machines to understand human speech",
+          "A method for controlling computer hardware"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which option describes Deep Learning (DL)?",
+        options: [
+          "A method used for basic data entry",
+          "A model used only for speech-to-text",
+          "A system for storing datasets",
+          "A subset of machine learning that uses specialized algorithms to model and understand complex structures and relationships among data"
+        ],
+        correct: [3]
+      },
+      {
+        text: "Which statement correctly describes Big Data?",
+        options: [
+          "Data characterized by volume, variety, and velocity",
+          "Data used only for small projects",
+          "Data that contains only images",
+          "Data that never changes"
+        ],
+        correct: [0]
+      },
+      {
+        text: "What is an Algorithm according to the slide?",
+        options: [
+          "A tool used only to store information",
+          "A random set of operations",
+          "A self-contained, step-by-step formula that automates a function such as a process or analysis",
+          "A method used only for drawing"
+        ],
+        correct: [2]
+      },
+      {
+        text: "Which of the following is a use of AI in Internet and Cloud?",
+        options: [
+          "Image classification",
+          "Face detection",
+          "Wearable health data recognition",
+          "Factory automation"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which AI application belongs to the Health Care sector?",
+        options: [
+          "Ecommerce tagging",
+          "Programming recommendations",
+          "Cancer cell detection",
+          "Store automation"
+        ],
+        correct: [2]
+      },
+      {
+        text: "Which of the following is an AI use in Media?",
+        options: [
+          "Diabetic grading",
+          "Real-time threat detection",
+          "Video search",
+          "Drones"
+        ],
+        correct: [3]
+      },
+      {
+        text: "Which of the following is an AI application in the Media sector?",
+        options: [
+          "Drug discoveries",
+          "Video search",
+          "Detect explosives",
+          "Self-driving automobiles"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Which AI application is part of Security and Defense?",
+        options: [
+          "Cancer cell detection",
+          "Geolocation",
+          "Ecommerce tagging",
+          "Captions"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Which of the following belongs to AI uses in Automation?",
+        options: [
+          "Image processing",
+          "Store automation",
+          "Video surveillance",
+          "Virtual reality"
+        ],
+        correct: [1]
+      },
+      {
+        text: "What describes Machine Learning according to the slide?",
+        options: [
+          "A field unrelated to AI",
+          "A system used only for storing data",
+          "A sub-field of Artificial Intelligence",
+          "A hardware component inside computers"
+        ],
+        correct: [2]
+      },
+      {
+        text: "Which statement explains what Machine Learning involves?",
+        options: [
+          "The construction and study of systems that can learn from data",
+          "Building systems that only follow fixed rules",
+          "Designing robots only for movement",
+          "Creating systems that store data without processing it"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Machine Learning evolved from which area according to the slide?",
+        options: [
+          "Pattern recognition and computational learning theory",
+          "Computer graphics",
+          "Hardware engineering",
+          "Network security"
+        ],
+        correct: [0]
+      },
+      {
+        text: "How is Machine Learning classified in relation to Artificial Intelligence?",
+        options: [
+          "A separate discipline",
+          "A hardware component",
+          "A type of operating system",
+          "A subfield of Artificial Intelligence"
+        ],
+        correct: [3]
+      },
+      {
+        text: "According to the slide, what do ML algorithms do?",
+        options: [
+          "They store data only",
+          "They iteratively learn from data",
+          "They run computer hardware",
+          "They translate languages"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Which of the following is one purpose of Machine Learning?",
+        options: [
+          "Generating random images",
+          "Making predictions",
+          "Designing electronic circuits",
+          "Controlling hardware voltage"
+        ],
+        correct: [2]
+      },
+      {
+        text: "Which of the following is one purpose of Machine Learning?",
+        options: [
+          "Designing electronic circuits",
+          "Controlling hardware voltage",
+          "Making predictions",
+          "Generating random images"
+        ],
+        correct: [2]
+      },
+      {
+        text: "What capability does Machine Learning offer according to the slide?",
+        options: [
+          "Finding hidden insights without explicit programming",
+          "Manually coding every rule",
+          "Only storing large amounts of data",
+          "Running computer cooling systems"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which option describes Supervised Learning?",
+        options: [
+          "Reliance on algorithm trained by human input",
+          "Algorithm trained with no human involvement",
+          "Complete automation without feedback",
+          "Model that learns only from unlabeled data"
+        ],
+        correct: [0]
+      },
+      {
+        text: "What characterizes Unsupervised Learning?",
+        options: [
+          "Reliance on human-labeled data",
+          "No algorithm is used",
+          "Only prediction tasks",
+          "High reliance on algorithm for raw data"
+        ],
+        correct: [3]
+      },
+      {
+        text: "Which of the following applies to Semi-Supervised Learning?",
+        options: [
+          "No manual review at all",
+          "Reliance on analytics trained by human input with automated analysis using the resulting model",
+          "Algorithm continually trained until accurate",
+          "Learning only from labeled data"
+        ],
+        correct: [1]
+      },
+      {
+        text: "What describes Reinforcement Learning?",
+        options: [
+          "Uses only raw unlabeled data",
+          "Automated model with no feedback",
+          "Algorithm continually trained by human input and automated once accurate",
+          "Manual coding of every action"
+        ],
+        correct: [2]
+      },
+      {
+        text: "Which of the following is an ML application?",
+        options: [
+          "Spam email detection",
+          "Manual message sorting",
+          "Hardware temperature control",
+          "File compression"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which item represents Machine Translation as an ML application?",
+        options: [
+          "Video editing",
+          "Face scanning",
+          "Battery optimization",
+          "Language translation"
+        ],
+        correct: [3]
+      },
+      {
+        text: "Which example corresponds to image search using similarity?",
+        options: [
+          "Manual folder browsing",
+          "Image search",
+          "Barcode scanning",
+          "Color adjustment"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Which of the following is linked to clustering (K-Means)?",
+        options: [
+          "Siri voice commands",
+          "Facebook photo tagging",
+          "Amazon recommendations",
+          "Bank statements"
+        ],
+        correct: [2]
+      },
+      {
+        text: "Classification is used in which ML example?",
+        options: [
+          "Google News",
+          "Netflix movies",
+          "Adobe editing",
+          "File encryption"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which ML application involves text summarization?",
+        options: [
+          "Google News",
+          "Email backup",
+          "Phone charging",
+          "Keyboard prediction"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which option is related to fraud detection?",
+        options: [
+          "Weather alerts",
+          "Credit card providers",
+          "Traffic lights",
+          "Video filters"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Speech understanding is demonstrated in which example?",
+        options: [
+          "Google Maps",
+          "iPhone with Siri",
+          "Email spam filters",
+          "Instagram reels"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Which example represents face detection?",
+        options: [
+          "Facebook’s photo tagging",
+          "Manual camera settings",
+          "Barcode recognition",
+          "Weather monitoring"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which of the following belongs to the Artificial Intelligence column?",
+        options: [
+          "Perception",
+          "Optimization",
+          "Neural networks",
+          "Distributed representations"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which item is listed under Machine Learning?",
+        options: [
+          "Hierarchical explanatory factors",
+          "Planning",
+          "Perception",
+          "Computational statistics"
+        ],
+        correct: [3]
+      },
+      {
+        text: "Which of the following belongs to the Deep Learning column?",
+        options: [
+          "Reasoning",
+          "Neural networks",
+          "Optimization",
+          "Planning"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Which phrase is associated with Artificial Intelligence in the slide?",
+        options: [
+          "Machine learning begins to flourish",
+          "Deep learning breakthroughs drive AI boom",
+          "Early artificial intelligence stirs excitement",
+          "AI systems classify images"
+        ],
+        correct: [2]
+      },
+      {
+        text: "Which sentence represents Machine Learning?",
+        options: [
+          "Machine learning begins to flourish",
+          "Early AI stirs excitement",
+          "AI boom driven by breakthroughs",
+          "Systems recognize speech"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which phrase is linked to Deep Learning?",
+        options: [
+          "Early artificial intelligence stirs excitement",
+          "Machine learning begins to flourish",
+          "Systems detect anomalies",
+          "Deep learning breakthroughs drive AI boom"
+        ],
+        correct: [3]
+      },
+      {
+        text: "Which of the following deep learning frameworks belongs to Google?",
+        options: [
+          "TensorFlow",
+          "CNTK",
+          "DSSTNE",
+          "Caffe2"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which deep learning framework is associated with Facebook?",
+        options: [
+          "Keras",
+          "CNTK",
+          "DSSTNE",
+          "Caffe2"
+        ],
+        correct: [3]
+      },
+      {
+        text: "Which framework belongs to Amazon?",
+        options: [
+          "TensorFlow",
+          "DSSTNE",
+          "Caffe2",
+          "Keras"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Which of the following is Microsoft’s deep learning framework?",
+        options: [
+          "Keras",
+          "Caffe2",
+          "CNTK",
+          "DSSTNE"
+        ],
+        correct: [2]
+      },
+      {
+        text: "What does Natural Language Processing (NLP) study?",
+        options: [
+          "Interaction between robots only",
+          "Translation of programming languages",
+          "Interaction between computer and human languages",
+          "Image-to-text conversion"
+        ],
+        correct: [2]
+      },
+      {
+        text: "How is NLP classified according to the slide?",
+        options: [
+          "A sub-field of AI",
+          "A hardware component",
+          "A networking protocol",
+          "A type of database"
+        ],
+        correct: [0]
+      },
+      {
+        text: "What is the aim of NLP?",
+        options: [
+          "To optimize computer memory",
+          "To design network circuits",
+          "To build intelligent computers that interact with humans like a human being",
+          "To improve storage speed"
+        ],
+        correct: [2]
+      },
+      {
+        text: "According to the slide, NLP consists of which combination?",
+        options: [
+          "Biology + AI + Statistics",
+          "Computer Science + AI + Computational Linguistics",
+          "Robotics + AI + Sensors",
+          "Mathematics + Logic + Physics"
+        ],
+        correct: [1]
+      },
+      {
+        text: "What is the first step shown in the Speech-to-Text (TTS) process?",
+        options: [
+          "Text",
+          "Speech",
+          "Feature extraction",
+          "Lifelike speech generation"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which of the following steps comes after “Text” in the TTS pipeline?",
+        options: [
+          "Speech",
+          "Lifelike speech generation",
+          "Feature extraction",
+          "Text processing"
+        ],
+        correct: [3]
+      },
+      {
+        text: "Which step in the TTS diagram involves generating key measurable characteristics?",
+        options: [
+          "Speech",
+          "Feature extraction",
+          "Text",
+          "Lifelike speech generation"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Which step produces realistic speech before the final output in TTS?",
+        options: [
+          "Text processing",
+          "Feature extraction",
+          "Lifelike speech generation",
+          "Text"
+        ],
+        correct: [2]
+      },
+      {
+        text: "Which of the following shows the correct order of the Speech-to-Text (TTS) process as shown in the slide?",
+        options: [
+          "Text → Feature extraction → Speech → Text processing",
+          "Speech → Text → Text processing → Lifelike speech generation",
+          "Text → Text processing → Feature extraction → Lifelike speech generation → Speech",
+          "Feature extraction → Text → Speech → Lifelike speech generation"
+        ],
+        correct: [2]
+      },
+      {
+        text: "Which of the following languages is listed as more complex than English for NLP?",
+        options: [
+          "Spanish",
+          "Italian",
+          "Japanese",
+          "Dutch"
+        ],
+        correct: [2]
+      },
+      {
+        text: "Which factor is included under Non-Standard Language in the slide?",
+        options: [
+          "Complex entity names",
+          "Audio quality improvement",
+          "Speech-to-text errors",
+          "Text compression methods"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which of the following is listed as a challenge that makes NLP hard?",
+        options: [
+          "High training speed",
+          "Easy grammar rules",
+          "Ambiguity",
+          "Unlimited vocabulary storage"
+        ],
+        correct: [2]
+      },
+      {
+        text: "Which option correctly describes Deep Learning (DL)?",
+        options: [
+          "A simple form of text processing",
+          "A replacement for all ML techniques",
+          "A branch of ML that uses neural network models to understand large amounts of data",
+          "A manual rule-based system"
+        ],
+        correct: [2]
+      },
+      {
+        text: "Which statement describes Machine Learning (ML)?",
+        options: [
+          "A system that only stores raw data",
+          "A tool for editing text",
+          "A hardware mechanism inside the CPU",
+          "A computational method that allows machines to act or think without being explicitly directed to perform specific functions"
+        ],
+        correct: [3]
+      },
+      {
+        text: "According to the slide, Artificial Intelligence (AI) is defined as:",
+        options: [
+          "Machine Intelligence",
+          "Image classification",
+          "Human-only reasoning",
+          "Hardware automation"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which option describes an intelligent robot?",
+        options: [
+          "A mechanical creature that functions autonomously",
+          "A machine that requires constant human supervision",
+          "A device limited to a single task only",
+          "A robot that cannot be reprogrammed"
+        ],
+        correct: [0]
+      },
+      {
+        text: "According to the Robot Institute of America (1979), a robot is:",
+        options: [
+          "A device that works only through manual control",
+          "A reprogrammable, multifunctional manipulator designed to move materials or tools through programmed motions",
+          "A simple machine with no autonomy",
+          "A system used only for communication"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Who coined the term robotics?",
+        options: [
+          "Karel Capek",
+          "Alan Turing",
+          "Isaac Asimov",
+          "John McCarthy"
+        ],
+        correct: [2]
+      },
+      {
+        text: "When was the word robot first used?",
+        options: [
+          "1950",
+          "1921",
+          "1890",
+          "2001"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Which component converts signals from the controller into meaningful power levels for the actuators?",
+        options: [
+          "Sensory Devices",
+          "Power Conversion Unit",
+          "Manipulator",
+          "Actuators"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Which component of a robot system consists of rigid members called links connected by joints?",
+        options: [
+          "Controller",
+          "Manipulator",
+          "Actuator",
+          "Sensory Device"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Which of the following is an advantage of robots according to the slide?",
+        options: [
+          "They get tired after long working hours",
+          "They are used to do repetitive (boring) actions or jobs",
+          "They cannot perform dangerous tasks",
+          "They reduce production quality"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Why can robots increase productivity?",
+        options: [
+          "Because they work only during the day",
+          "Because they can work 24/7 without getting sick or complaining",
+          "Because they need long rest periods",
+          "Because they can only perform one task"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Which of the following is listed as a disadvantage of robots?",
+        options: [
+          "High expense",
+          "Unlimited warranty",
+          "Instant training",
+          "Guaranteed safety"
+        ],
+        correct: [0]
+      },
+      {
+        text: "What does the slide mention about expertise as a disadvantage?",
+        options: [
+          "Training to use robots takes time",
+          "Robots require no training",
+          "Training is always guaranteed",
+          "Training robots is instant"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which type of robot is used for repetitive tasks and inspection of pipes or sites not easily accessible to humans?",
+        options: [
+          "Industrial robots",
+          "Household robots",
+          "Educational robots",
+          "Medical robots"
+        ],
+        correct: [0]
+      },
+      {
+        text: "Which type of robot is used for teaching and training?",
+        options: [
+          "Medical robots",
+          "Educational robots",
+          "Industrial robots",
+          "Household robots"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Which robots are used in surgical precision, telemedicine, and robotic arms?",
+        options: [
+          "Educational robots",
+          "Household robots",
+          "Medical robots",
+          "Industrial robots"
+        ],
+        correct: [2]
+      },
+      {
+        text: "Which type of robot assists with household tasks and supports aged or infirm people?",
+        options: [
+          "Industrial robots",
+          "Medical robots",
+          "Household and helper robots",
+          "Educational robots"
+        ],
+        correct: [2]
+      },
+      {
+        text: "HAL (Hybrid Assistive Limb) is:",
+        options: [
+          "An underwater research robot",
+          "A powered exoskeleton robot",
+          "A flying rescue robot",
+          "A robotic animal"
+        ],
+        correct: [1]
+      },
+      {
+        text: "WildCat is described as:",
+        options: [
+          "A robot used for surgery",
+          "The fastest quadruped robot",
+          "A robot used for household tasks",
+          "A robot designed for entertainment only"
+        ],
+        correct: [1]
+      },
+      {
+        text: "What can the BigDog robot do according to the slide?",
+        options: [
+          "Fly drones",
+          "Run at 4 miles per hour",
+          "Perform medical surgeries",
+          "Teach students"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Which feature is associated with the Atlas humanoid robot?",
+        options: [
+          "Used for language translation",
+          "Uses lasers and cameras to navigate and locate objects",
+          "Designed for underwater exploration",
+          "Works as a household cleaner"
+        ],
+        correct: [1]
+      },
+      {
+        text: "ASIMO is described as:",
+        options: [
+          "A robotic dog",
+          "A multifunctional humanoid mobile assistant",
+          "A military surveillance robot",
+          "A scientific rover"
+        ],
+        correct: [1]
+      },
+      {
+        text: "Which robots are used in chemically contaminated areas or outer space?",
+        options: [
+          "Industrial robots",
+          "Scientific or research robots",
+          "Household robots",
+          "Military robots"
+        ],
+        correct: [1]
+      }
+    ];
+
+    // ==============================
+    // منطق الامتحانات (كل 20 سؤال Exam)
+    // ==============================
+
+    const QUESTIONS_PER_EXAM = 20;
+    const totalQuestions = questions.length;
+    const totalExams = Math.ceil(totalQuestions / QUESTIONS_PER_EXAM);
+
+    const examNumberEl = document.getElementById("exam-number");
+    const totalExamsEl = document.getElementById("total-exams");
+    const questionTextEl = document.getElementById("question-text");
+    const optionsListEl = document.getElementById("options-list");
+    const questionIndexEl = document.getElementById("question-index");
+    const examQuestionsCountEl = document.getElementById("exam-questions-count");
+    const progressBarEl = document.getElementById("progress-bar");
+    const prevBtn = document.getElementById("prev-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const resultsEl = document.getElementById("results");
+
+    totalExamsEl.textContent = totalExams;
+
+    let currentExam = 0;             // 0-based
+    let currentQuestionInExam = 0;   // index داخل الامتحان
+    const userAnswers = Array.from({ length: totalQuestions }, () => []);
+
+    function getExamStartIndex(examIndex) {
+      return examIndex * QUESTIONS_PER_EXAM;
+    }
+
+    function getExamQuestionCount(examIndex) {
+      const start = examIndex * QUESTIONS_PER_EXAM;
+      const remaining = totalQuestions - start;
+      return remaining <= 0 ? 0 : Math.min(QUESTIONS_PER_EXAM, remaining);
+    }
+
+    function isMultiCorrect(question) {
+      return question.correct.length > 1;
+    }
+
+    function renderQuestion() {
+      const examQuestionCount = getExamQuestionCount(currentExam);
+      if (examQuestionCount === 0) {
+        questionTextEl.textContent = "لا يوجد أسئلة في هذا الامتحان.";
+        optionsListEl.innerHTML = "";
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
+        return;
+      }
+
+      const startIndex = getExamStartIndex(currentExam);
+      const globalIndex = startIndex + currentQuestionInExam;
+      if (globalIndex >= totalQuestions) {
+        questionTextEl.textContent = "انتهت الأسئلة.";
+        optionsListEl.innerHTML = "";
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
+        return;
+      }
+
+      const q = questions[globalIndex];
+
+      examNumberEl.textContent = currentExam + 1;
+      examQuestionsCountEl.textContent = examQuestionCount;
+      questionIndexEl.textContent = currentQuestionInExam + 1;
+
+      const progress = ((currentQuestionInExam + 1) / examQuestionCount) * 100;
+      progressBarEl.style.width = progress + "%";
+
+      questionTextEl.textContent = q.text;
+
+      optionsListEl.innerHTML = "";
+      const multi = isMultiCorrect(q);
+      const name = "q" + globalIndex;
+
+      q.options.forEach((optText, idx) => {
+        const li = document.createElement("li");
+        const label = document.createElement("label");
+        label.className = "option-label";
+
+        const input = document.createElement("input");
+        input.type = multi ? "checkbox" : "radio";
+        input.name = name;
+        input.value = idx;
+
+        if (userAnswers[globalIndex].includes(idx)) {
+          input.checked = true;
+        }
+
+        label.appendChild(input);
+        label.appendChild(document.createTextNode(optText));
+        li.appendChild(label);
+        optionsListEl.appendChild(li);
+      });
+
+      prevBtn.disabled = currentQuestionInExam === 0;
+      nextBtn.textContent = (currentQuestionInExam === examQuestionCount - 1)
+        ? "إنهاء هذا الامتحان"
+        : "التالي";
+    }
+
+    function saveCurrentAnswer() {
+      const examQuestionCount = getExamQuestionCount(currentExam);
+      if (examQuestionCount === 0) return false;
+
+      const startIndex = getExamStartIndex(currentExam);
+      const globalIndex = startIndex + currentQuestionInExam;
+
+      const inputs = optionsListEl.querySelectorAll("input");
+      const selected = [];
+
+      inputs.forEach((input) => {
+        if (input.checked) {
+          selected.push(parseInt(input.value, 10));
+        }
+      });
+
+      userAnswers[globalIndex] = selected;
+      return selected.length > 0;
+    }
+
+    function arraysEqualAsSets(a, b) {
+      if (a.length !== b.length) return false;
+      const setA = new Set(a);
+      const setB = new Set(b);
+      if (setA.size !== setB.size) return false;
+      for (const val of setA) {
+        if (!setB.has(val)) return false;
+      }
+      return true;
+    }
+
+    function calculateScoreForExam(examIndex) {
+      const start = getExamStartIndex(examIndex);
+      const count = getExamQuestionCount(examIndex);
+      let correctCount = 0;
+
+      for (let i = 0; i < count; i++) {
+        const globalIndex = start + i;
+        const q = questions[globalIndex];
+        const user = userAnswers[globalIndex] || [];
+        if (arraysEqualAsSets(user, q.correct)) {
+          correctCount++;
+        }
+      }
+
+      return { correctCount, count };
+    }
+
+    function showResultsForExam(examIndex) {
+      const start = getExamStartIndex(examIndex);
+      const count = getExamQuestionCount(examIndex);
+      const { correctCount } = calculateScoreForExam(examIndex);
+      const percentage = count === 0 ? 0 : Math.round((correctCount / count) * 100);
+
+      let html = `
+        <div class="exam-result-block">
+          <h2>نتيجة الامتحان ${examIndex + 1}</h2>
+          <div class="score-box">
+            علامتك في هذا الامتحان:
+            <span>${correctCount}</span> من <span>${count}</span> (${percentage}%)
+          </div>
+          <div class="score-box">
+            لكل سؤال تظهر جميع الخيارات؛ إجابتك الصحيحة بعلامة (✔️) خضراء،
+            وإجابتك الخاطئة بعلامة (❌) حمراء، مع تمييز الإجابة الصحيحة دائمًا بالأخضر.
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th style="width:40px;">#</th>
+                <th style="width:40%;">السؤال</th>
+                <th>الخيارات (A, B, C, D)</th>
+                <th style="width:90px;">الحالة</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+
+      for (let i = 0; i < count; i++) {
+        const globalIndex = start + i;
+        const q = questions[globalIndex];
+        const user = userAnswers[globalIndex] || [];
+        const isCorrect = arraysEqualAsSets(user, q.correct);
+
+        // بناء قائمة الخيارات مع الأيقونات والألوان
+        let optionsHTML = "";
+        q.options.forEach((optText, idx) => {
+          const letter = String.fromCharCode(65 + idx); // A, B, C, D
+
+          const isCorrectOpt = q.correct.includes(idx);
+          const isChosen = user.includes(idx);
+
+          let icon = "";
+          let cls = "neutral-option";
+
+          if (isCorrectOpt && isChosen) {
+            icon = "✔️";
+            cls = "correct-answer";
+          } else if (isCorrectOpt && !isChosen) {
+            icon = "✔️";
+            cls = "correct-answer";
+          } else if (!isCorrectOpt && isChosen) {
+            icon = "❌";
+            cls = "wrong-answer";
+          }
+
+          optionsHTML += `
+            <div class="option-line ${cls}">
+              <span class="option-icon">${icon}</span>
+              <span>${letter}. ${optText}</span>
+            </div>
+          `;
+        });
+
+        html += `
+          <tr>
+            <td>${i + 1}</td>
+            <td>${q.text}</td>
+            <td>${optionsHTML}</td>
+            <td class="${isCorrect ? "correct-answer" : "wrong-answer"}">
+              ${isCorrect ? "✔️ صحيحة" : "❌ خطأ"}
+            </td>
+          </tr>
+        `;
+      }
+
+      html += `
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      resultsEl.insertAdjacentHTML("beforeend", html);
+    }
+
+    // أزرار التنقل
+    prevBtn.addEventListener("click", () => {
+      const examQuestionCount = getExamQuestionCount(currentExam);
+      if (examQuestionCount === 0) return;
+
+      saveCurrentAnswer();
+      if (currentQuestionInExam > 0) {
+        currentQuestionInExam--;
+        renderQuestion();
+      }
+    });
+
+    nextBtn.addEventListener("click", () => {
+      const examQuestionCount = getExamQuestionCount(currentExam);
+      if (examQuestionCount === 0) return;
+
+      const hasAnswer = saveCurrentAnswer();
+      if (!hasAnswer) {
+        alert("رجاءً اختاري إجابة قبل المتابعة.");
+        return;
+      }
+
+      if (currentQuestionInExam < examQuestionCount - 1) {
+        currentQuestionInExam++;
+        renderQuestion();
+      } else {
+        // نهاية الامتحان الحالي
+        showResultsForExam(currentExam);
+
+        if (currentExam < totalExams - 1) {
+          alert("تم إنهاء الامتحان " + (currentExam + 1) + ". سيتم بدء الامتحان " + (currentExam + 2) + ".");
+          currentExam++;
+          currentQuestionInExam = 0;
+          renderQuestion();
+        } else {
+          alert("تم إنهاء آخر امتحان. أحسنت 👏");
+          prevBtn.disabled = true;
+          nextBtn.disabled = true;
+        }
+      }
+    });
+
+    if (totalQuestions === 0) {
+      document.getElementById("quiz-area").innerHTML = "<p>لا يوجد أسئلة مضافة بعد.</p>";
+    } else {
+      renderQuestion();
+    }
+  </script>
+</body>
+</html>
